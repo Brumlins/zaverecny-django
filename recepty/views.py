@@ -5,8 +5,12 @@ from .models import Member
 
 
 def recepty(request):
-    template = loader.get_template('index.html')
-    return HttpResponse(template.render())
+    context = {
+        'title' : 'Recepty'
+
+    }
+    title = 'Recepty'
+    return render(request, 'index.html', context=context)
 
 
 def members_list(request):

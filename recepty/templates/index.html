@@ -1,12 +1,20 @@
-<!doctype html>
-<html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Recepty</title>
-</head>
-<body>
-    <h1> Recepty </h1>
-    <p>jupi</p>
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="navbar-content">
+    <a href="#" class="navbar-brand">Recepty</a>
+    <a href="{% url 'members_list' %}" class="btn btn-primary">Členové</a>
+  </div>
+</nav>
+
+<!-- Page content -->
+<div class="container mt-20">
+  <h1 class="display-4">Vítej v aplikaci Recepty!</h1>
+  <p class="lead">Najdi a sdílej chutné recepty s ostatními.</p>
+
+  <a href="{% url 'members_list' %}" class="btn btn-secondary">Zobrazit členy</a>
+</div>
+
+{% endblock %}
