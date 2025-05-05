@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-20">
+  <h2>Editace člena</h2>
+  <form method="POST" class="mt-10">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="firstname">Jméno</label>
+      <input type="text" name="firstname" id="firstname" class="form-control" value="{{ member.firstname }}" required>
+    </div>
+    <div class="form-group">
+      <label for="lastname">Příjmení</label>
+      <input type="text" name="lastname" id="lastname" class="form-control" value="{{ member.lastname }}" required>
+    </div>
+    <div class="form-group">
+      <label for="email">E-mail</label>
+      <input type="email" name="email" id="email" class="form-control" value="{{ member.email }}">
+    </div>
+    <div class="form-group">
+      <label for="joined_date">Datum přidání</label>
+      <input type="date" name="joined_date" id="joined_date" class="form-control" value="{{ member.joined_date|date:'Y-m-d' }}">
+    </div>
+    <button type="submit" class="btn btn-primary mt-10">Uložit změny</button>
+    <a href="{% url 'members' %}" class="btn btn-secondary mt-10 ml-10">Zpět</a>
+  </form>
+</div>
+{% endblock %}

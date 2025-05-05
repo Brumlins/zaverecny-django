@@ -5,7 +5,7 @@
 <nav class="navbar">
   <div class="navbar-content">
     <a href="#" class="navbar-brand">Recepty</a>
-    <a href="{% url 'members_list' %}" class="btn btn-primary">Členové</a>
+    <a href="{% url 'members' %}" class="btn btn-primary">Členové</a>
   </div>
 </nav>
 
@@ -14,7 +14,7 @@
   <h1 class="display-4">Vítej v aplikaci Recepty!</h1>
   <p class="lead">Najdi a sdílej chutné recepty s ostatními.</p>
 
-  <a href="{% url 'members_list' %}" class="btn btn-secondary">Zobrazit členy</a>
+  <a href="{% url 'members' %}" class="btn btn-secondary">Zobrazit členy</a>
 </div>
 
 {% endblock %}

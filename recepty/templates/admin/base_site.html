@@ -1,0 +1,133 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrahead %}
+  <link rel="stylesheet" href="{% static 'halfmoon/halfmoon.min.css' %}">
+  <style>
+    body {
+      background-color: #101010;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .admin-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #1c1c1c;
+      padding: 20px;
+      color: #fff;
+    }
+
+    .sidebar h2 {
+      color: #90caf9;
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .sidebar a {
+      color: #bbb;
+      display: block;
+      padding: 10px 0;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+
+    .sidebar a:hover {
+      color: #fff;
+    }
+
+    .main-content {
+      flex-grow: 1;
+      padding: 40px;
+      background-color: #181818;
+      color: #f0f0f0;
+    }
+
+    h1 {
+      color: #ffffff;
+      font-size: 28px;
+      margin-bottom: 30px;
+    }
+
+    .halfmoon-form {
+      background-color: #222;
+      padding: 20px;
+      border-radius: 8px;
+    }
+
+    input, select, textarea {
+      background-color: #2c2c2c;
+      color: #fff;
+      border: 1px solid #444;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      width: 100%;
+    }
+
+    label {
+      font-weight: 600;
+    }
+
+    .button {
+      background-color: #1e88e5;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .button:hover {
+      background-color: #1565c0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #232323;
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #333;
+      text-align: left;
+    }
+
+    th {
+      background-color: #2d2d2d;
+    }
+
+    tr:hover {
+      background-color: #2a2a2a;
+    }
+  </style>
+{% endblock %}
+
+{% block bodyclass %}admin{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Správa</h2>
+    <a href="/admin/recepty/recept/">📄 Recepty</a>
+    <a href="/admin/recepty/member/">👤 Členové</a>
+    <a href="/admin/logout/">🚪 Odhlásit</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    {% if title %}<h1>{{ title }}</h1>{% endif %}
+    {{ content }}
+  </div>
+
+</div>
+{% endblock %}
