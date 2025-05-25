@@ -1,27 +1,30 @@
 from django.db import models
+from django.conf import settings
 
-class Member(models.Model):
-    firstname = models.CharField(max_length=255)
-    lastname = models.CharField(max_length=255)
-    email = models.EmailField(null=True)
-    joined_date = models.DateField(null=True)
+class Profile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    bio = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.firstname} {self.lastname}"
-
+        return self.user.username
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='ingredient_images/', blank=True, null=True)
 
     def __str__(self):
         return self.name
 
-
 class Recipe(models.Model):
-    title = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
-    instructions = models.TextField(blank=True)
-    member = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='recipes')
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    autor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='recepty'
+    )
+    image = models.ImageField(upload_to='recipe_images/', blank=True, null=True)  # Fotka receptu
 
     def __str__(self):
         return self.title

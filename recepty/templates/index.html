@@ -1,20 +1,13 @@
 {% extends "base.html" %}
+
 {% block content %}
 
-<!-- Navbar -->
-<nav class="navbar">
-  <div class="navbar-content">
-    <a href="#" class="navbar-brand">Recepty</a>
-    <a href="{% url 'members' %}" class="btn btn-primary">Členové</a>
-  </div>
-</nav>
-
-<!-- Page content -->
+<!-- Úvodní stránka -->
 <div class="container mt-20">
-  <h1 class="display-4">Vítej v aplikaci Recepty!</h1>
-  <p class="lead">Najdi a sdílej chutné recepty s ostatními.</p>
+  <h1 class="display-4">Vítejte na stránkách Receptů!</h1>
+  <p class="lead">Najděte a sdílejte recepty s ostatními. Pro začátek si prohlédněte naše recepty nebo se podívejte na seznam členů.</p>
 
-  <a href="{% url 'members' %}" class="btn btn-secondary">Zobrazit členy</a>
+  <a href="{% url 'recipe_list' %}" class="btn btn-secondary">Prohlédnout recepty</a>
 </div>
 
 {% endblock %}

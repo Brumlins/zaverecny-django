@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Přidat recept{% endblock %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 600px;">
+    <h2>Přidat recept</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <h4>Ingredience</h4>
+        {{ formset.management_form }}
+        {% for subform in formset %}
+            <div class="form-row mb-2">
+                <div class="col">
+                    {{ subform.ingredient.label_tag }} {{ subform.ingredient }}
+                </div>
+                <div class="col">
+                    {{ subform.quantity.label_tag }} {{ subform.quantity }}
+                </div>
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Přidat recept</button>
+    </form>
+</div>
+{% endblock %}

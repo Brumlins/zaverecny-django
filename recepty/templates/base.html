@@ -1,15 +1,37 @@
-{% load static %}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="{% static 'halfmoon/halfmoon.min.css' %}" rel="stylesheet">
-    <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Aplikace Recepty{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    {% block content %}
-    {% endblock %}
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="navbar-content">
+    <a href="{% url 'index' %}" class="navbar-brand">Domů</a>  <!-- Odkaz na domovskou stránku -->
+    <a href="{% url 'recipe_list' %}" class="btn btn-secondary">Recepty</a>
+    <a href="{% url 'ingredient_list' %}" class="btn btn-secondary">Ingredience</a>
+    {% if user.is_authenticated %}
+    <a href="{% url 'profile' %}" class="btn btn-secondary">Profil</a>
+    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Odhlásit se</button>
+    </form>
+
+{% else %}
+    <a href="{% url 'login' %}" class="btn btn-secondary">Přihlášení</a>
+    <a href="{% url 'registrace' %}" class="btn btn-secondary">Registrace</a>
+
+{% endif %}
+
+  </div>
+</nav>
+
+<!-- Hlavní obsah stránky -->
+{% block content %}{% endblock %}
 
 </body>
 </html>

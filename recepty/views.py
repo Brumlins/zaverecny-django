@@ -1,62 +1,83 @@
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Member
-from .forms import MemberForm
+from .models import Ingredient, Recipe
+from .forms import RecipeForm, RecipeIngredientFormSet, IngredientForm, RegistraceForm
 
-def members(request):
-    all_members = Member.objects.all().order_by('-joined_date')
 
-    if request.method == 'POST':
-        form = MemberForm(request.POST)
+def profile(request):
+    return render(request, 'profile.html')
+
+def logout_view(request):
+    logout(request)
+    return redirect('/')
+
+def registrace(request):
+    if request.method == "POST":
+        form = RegistraceForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('/members')
+            return redirect('login')  # Po úspěšné registraci přesměruj na přihlášení
     else:
-        form = MemberForm()
+        form = RegistraceForm()
+    return render(request, 'registration/registrace.html', {'form': form})
 
-    return render(request, 'members/members.html', {
-        'members': all_members,
-        'form': form
+
+
+def index(request):
+    return render(request, 'index.html')  # Ukázková domovská stránka
+
+
+def recipe_list(request):
+    recipes = Recipe.objects.all()
+    return render(request, 'recepty/recipe_list.html', {'recipes': recipes})
+
+def recipe_detail(request, pk):
+    recipe = get_object_or_404(Recipe, pk=pk)
+    recipe.ingredients.all()
+    return render(request, 'recepty/recipe_detail.html', {'recipe': recipe})
+
+
+@login_required
+def pridat_ingredienci(request):
+    if request.method == "POST":
+        form = IngredientForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('ingredient_list')
+    else:
+        form = IngredientForm()
+    return render(request, 'ingredience/pridat_ingredienci.html', {'form': form})
+
+def ingredient_list(request):
+    ingredients = Ingredient.objects.all()
+    return render(request, 'ingredience/ingredient_list.html', {'ingredients': ingredients})
+
+def ingredient_detail(request, name):
+    ingredient = Ingredient.objects.get(name=name)
+    recepty = ingredient.recipeingredient_set.all()  # všechny RecipeIngredient záznamy s touto ingrediencí
+    return render(request, 'ingredience/ingredient_detail.html', {
+        'ingredient': ingredient,
+        'recepty': recepty,
     })
 
-def add_member(request):
-    if request.method == 'POST':
-        firstname = request.POST['firstname']
-        lastname = request.POST['lastname']
-        email = request.POST.get('email')
-        joined_date = request.POST.get('joined_date')
-        Member.objects.create(
-            firstname=firstname,
-            lastname=lastname,
-            email=email,
-            joined_date=joined_date or None
-        )
-    return redirect('members')
-
-def delete_member(request, member_id):
-    member = get_object_or_404(Member, pk=member_id)
-    if request.method == 'POST':
-        member.delete()
-        return redirect('members')
-    return render(request, 'members/confirm_delete.html', {'member': member})
 
 
+@login_required
+def pridat_recept(request):
+    if request.method == "POST":
+        form = RecipeForm(request.POST, request.FILES)
+        formset = RecipeIngredientFormSet(request.POST)
+        if form.is_valid() and formset.is_valid():
+            recipe = form.save(commit=False)
+            recipe.autor = request.user
+            recipe.save()
+            formset.instance = recipe
+            formset.save()
+            return redirect('recipe_list')
+    else:
+        form = RecipeForm()
+        formset = RecipeIngredientFormSet()
+    return render(request, 'recepty/pridat_recept.html', {'form': form, 'formset': formset})
 
-def edit_member(request, member_id):
-    member = get_object_or_404(Member, pk=member_id)
-    if request.method == 'POST':
-        member.firstname = request.POST['firstname']
-        member.lastname = request.POST['lastname']
-        member.email = request.POST.get('email')
-        member.joined_date = request.POST.get('joined_date') or None
-        member.save()
-        return redirect('members')
-    return render(request, 'members/edit_member.html', {'member': member})
 
-
-def recepty(request):
-    context = {
-        'title' : 'Recepty'
-
-    }
-    title = 'Recepty'
-    return render(request, 'index.html', context=context)

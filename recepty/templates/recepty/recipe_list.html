@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h1 class="display-4">Seznam Receptů</h1>
+
+    {% if recipes %}
+      <ul class="list-group">
+        {% for recipe in recipes %}
+          <li class="list-group-item">
+            <h4>{{ recipe.title }}</h4>
+<!--            <p>{{ recipe.description }}</p>-->
+            <a href="{% url 'recipe_detail' recipe.pk %}" class="btn btn-primary">Zobrazit Recept</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Žádné recepty k zobrazení.</p>
+    {% endif %}
+    {% if user.is_authenticated %}
+    <a href="{% url 'pridat_recept' %}" class="btn btn-success mt-3">Přidat recept</a>
+{% endif %}
+
+  </div>
+{% endblock %}

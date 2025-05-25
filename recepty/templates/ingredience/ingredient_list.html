@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Ingredience{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Seznam ingrediencí</h2>
+    <ul>
+        {% for ingredient in ingredients %}
+            <li>
+                <a href="{% url 'ingredient_detail' ingredient.name %}">{{ ingredient.name }}</a>
+            </li>
+        {% empty %}
+            <li>Žádné ingredience.</li>
+        {% endfor %}
+    </ul>
+    {% if user.is_authenticated %}
+        <a href="{% url 'pridat_ingredienci' %}" class="btn btn-success mt-3">Přidat ingredienci</a>
+    {% endif %}
+</div>
+{% endblock %}

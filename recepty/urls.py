@@ -1,10 +1,23 @@
 from django.urls import path
 from . import views
+from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
-    path('recepty/', views.recepty, name='recepty'),
-    path('members/', views.members, name='members'),
-    path('members/add/', views.add_member, name='add_member'),
-    path('members/delete/<int:member_id>/', views.delete_member, name='delete_member'),
-    path('members/edit/<int:member_id>/', views.edit_member, name='edit_member'),
+    path('', views.index, name='index'),
+
+    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='logout'), name='logout'),
+    path('accounts/profile/', login_required(views.profile), name='profile'),
+    path('registrace/', views.registrace, name='registrace'),
+
+    path('recepty/pridat/', views.pridat_recept, name='pridat_recept'),
+    path('recepty/', views.recipe_list, name='recipe_list'),
+    path('recepty/<int:pk>/', views.recipe_detail, name='recipe_detail'),
+
+    path('ingredience/pridat/', views.pridat_ingredienci, name='pridat_ingredienci'),
+    path('ingredience/', views.ingredient_list, name='ingredient_list'),
+    path('ingredience/<str:name>/', views.ingredient_detail, name='ingredient_detail'),
+
+
 ]
