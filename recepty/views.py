@@ -1,7 +1,7 @@
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Ingredient, Recipe
+from .models import Ingredient, Recipe, RecipeIngredient
 from .forms import RecipeForm, RecipeIngredientFormSet, IngredientForm, RegistraceForm
 
 
@@ -55,10 +55,11 @@ def ingredient_list(request):
 
 def ingredient_detail(request, name):
     ingredient = Ingredient.objects.get(name=name)
-    recepty = ingredient.recipeingredient_set.all()  # všechny RecipeIngredient záznamy s touto ingrediencí
+    # najdi všechny RecipeIngredient pro tuto ingredienci
+    recipe_ingredients = RecipeIngredient.objects.filter(ingredient=ingredient)
     return render(request, 'ingredience/ingredient_detail.html', {
         'ingredient': ingredient,
-        'recepty': recepty,
+        'recipe_ingredients': recipe_ingredients,
     })
 
 
