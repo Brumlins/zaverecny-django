@@ -1,26 +1,97 @@
 {% extends "base.html" %}
 
-{% block title %}Přidat recept{% endblock %}
+{% block title %}Přidat ingredienci{% endblock %}
+{% block extra_css %}
+<style>
+.file-label .file-cta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+.file-label .file-cta .file-label {
+    width: auto;
+    text-align: center;
+}
+</style>
+{% endblock %}
+
 
 {% block content %}
+
 <div class="container mt-4" style="max-width: 600px;">
-    <h2>Přidat recept</h2>
-    <form method="post" enctype="multipart/form-data">
+    <h2 class="title is-3 mb-5 has-text-centered">Přidat ingredienci</h2>
+    <form method="post" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
-        {{ form.as_p }}
-        <h4>Ingredience</h4>
-        {{ formset.management_form }}
-        {% for subform in formset %}
-            <div class="form-row mb-2">
-                <div class="col">
-                    {{ subform.ingredient.label_tag }} {{ subform.ingredient }}
-                </div>
-                <div class="col">
-                    {{ subform.quantity.label_tag }} {{ subform.quantity }}
+
+        <div class="field">
+            <label class="label" for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+            <div class="control">
+                {{ form.name }}
+            </div>
+            {% for error in form.name.errors %}
+                <p class="help is-danger">{{ error }}</p>
+            {% endfor %}
+        </div>
+
+        <div class="field">
+            <label class="label" for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+            <div class="control">
+                {{ form.description }}
+            </div>
+            {% for error in form.description.errors %}
+                <p class="help is-danger">{{ error }}</p>
+            {% endfor %}
+        </div>
+
+                <div class="field">
+            <label class="label" for="{{ form.image.id_for_label }}">{{ form.image.label }}</label>
+            <div class="control">
+                <div class="file has-name is-boxed is-fullwidth is-centered">
+                    <label class="file-label">
+                        {{ form.image }}
+                        <span class="file-cta">
+                            <span class="file-icon">
+                                <i class="fas fa-upload"></i>
+                            </span>
+                            <span class="file-label">
+                                Vybrat obrázek…
+                            </span>
+                        </span>
+                        <span class="file-name" id="file-name">
+                            Žádný soubor nevybrán
+                        </span>
+                    </label>
                 </div>
             </div>
-        {% endfor %}
-        <button type="submit" class="btn btn-primary">Přidat recept</button>
+            {% for error in form.image.errors %}
+                <p class="help is-danger">{{ error }}</p>
+            {% endfor %}
+        </div>
+
+
+        <div class="field mt-4">
+            <div class="control">
+                <button type="submit" class="button is-primary is-fullwidth">Přidat ingredienci</button>
+            </div>
+        </div>
     </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const fileInput = document.querySelector('.file-input');
+    const fileName = document.getElementById('file-name');
+    if (fileInput) {
+        fileInput.addEventListener('change', function () {
+            if (fileInput.files.length > 0) {
+                fileName.textContent = fileInput.files[0].name;
+            } else {
+                fileName.textContent = 'Žádný soubor nevybrán';
+            }
+        });
+    }
+});
+</script>
+
 {% endblock %}

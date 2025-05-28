@@ -3,31 +3,128 @@
 {% block title %}Přidat recept{% endblock %}
 
 {% block content %}
-<form method="post" enctype="multipart/form-data">
+<h2 class="title is-3 mb-5 has-text-centered">Nový recept</h2>
+<div class="container mt-5" style="max-width: 600px;">
+  <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
     {{ form.non_field_errors }}
-    <h4>Ingredience</h4>
 
-{{ formset.management_form }}
-{% for subform in formset %}
-    <div class="form-row mb-2">
-        <div class="col">
-            {{ subform.ingredient.label_tag }} {{ subform.ingredient }}
+    {% for field in form %}
+      <div class="field">
+        <label class="label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        <div class="control">
+          {# File input - speciální Bulma uploader #}
+          {% if field.field.widget.input_type == "file" %}
+            <div class="file has-name is-boxed is-fullwidth">
+              <label class="file-label">
+                {{ field }}
+                <span class="file-cta">
+                  <span class="file-icon">
+                    <i class="fas fa-upload"></i>
+                  </span>
+                  <span class="file-label">
+                    Vybrat obrázek…
+                  </span>
+                </span>
+                <span class="file-name" id="file-name">
+                  Žádný soubor nevybrán
+                </span>
+              </label>
+            </div>
+          {% elif field.field.widget.input_type == "textarea" %}
+            {{ field }}
+          {% elif field.field.widget.input_type == "select" %}
+            <div class="select is-fullwidth">
+              {{ field }}
+            </div>
+          {% else %}
+            {{ field }}
+          {% endif %}
         </div>
-        <div class="col">
-            {{ subform.quantity.label_tag }} {{ subform.quantity }}
+        {% for error in field.errors %}
+          <p class="help is-danger">{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endfor %}
+
+    <h4 class="title is-5 mt-5 mb-3">Ingredience</h4>
+
+    {{ formset.management_form }}
+    {% for subform in formset %}
+      <div class="columns is-mobile is-vcentered mb-3">
+        <div class="column is-7">
+          <div class="field">
+            <label class="label" for="{{ subform.ingredient.id_for_label }}">{{ subform.ingredient.label }}</label>
+            <div class="control">
+              <div class="select is-fullwidth">
+                {{ subform.ingredient }}
+              </div>
+            </div>
+            {% for error in subform.ingredient.errors %}
+              <p class="help is-danger">{{ error }}</p>
+            {% endfor %}
+          </div>
         </div>
+        <div class="column is-5">
+          <div class="field">
+            <label class="label" for="{{ subform.quantity.id_for_label }}">{{ subform.quantity.label }}</label>
+            <div class="control">
+              {{ subform.quantity }}
+            </div>
+            {% for error in subform.quantity.errors %}
+              <p class="help is-danger">{{ error }}</p>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+
+    <p class="mb-4">
+      Nevidíte svoji ingredienci?
+      <a href="{% url 'pridat_ingredienci' %}" target="_blank">Přidejte ji!</a>
+    </p>
+
+    <div class="field">
+      <div class="control">
+        <button type="submit" class="button is-primary">Přidat recept</button>
+      </div>
     </div>
+  </form>
+</div>
 
-{% endfor %}
-    <p>
-    Nevidíte svoji ingredienci?
-    <a href="{% url 'pridat_ingredienci' %}" target="_blank">Přidejte ji!</a>
-</p>
+{# JavaScript pro zobrazení názvu vybraného souboru #}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const fileInput = document.querySelector('.file-input');
+    const fileName = document.getElementById('file-name');
+    if (fileInput && fileName) {
+        fileInput.addEventListener('change', function () {
+            if (fileInput.files.length > 0) {
+                fileName.textContent = fileInput.files[0].name;
+            } else {
+                fileName.textContent = 'Žádný soubor nevybrán';
+            }
+        });
+    }
+});
+</script>
 
-    <button type="submit" class="btn btn-primary">Přidat recept</button>
-</form>
-
-
+<style>
+/* Vycentrování obsahu uploaderu */
+.file-label .file-cta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+.file-label .file-cta .file-label {
+    width: auto;
+    text-align: center;
+}
+.file-name {
+    text-align: center;
+    width: 100%;
+    display: block;
+}
+</style>
 {% endblock %}

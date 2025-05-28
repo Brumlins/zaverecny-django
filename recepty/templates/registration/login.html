@@ -3,18 +3,42 @@
 {% block title %}Přihlášení{% endblock %}
 
 {% block content %}
-<div class="container mt-4" style="max-width: 400px;">
-    <h2 class="mb-4">Přihlášení</h2>
+<div class="container" style="max-width: 400px; margin-top: 1.5rem;">
+    <h2 class="title is-4">Přihlášení</h2>
     {% if form.errors %}
-        <div class="alert alert-danger">
+        <div class="notification is-danger">
             Špatné uživatelské jméno nebo heslo. Zkuste to znovu.
         </div>
     {% endif %}
     <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Přihlásit se</button>
-    </form>
+    {% csrf_token %}
+    <div class="field">
+        <label class="label" for="{{ form.username.id_for_label }}">Uživatelské jméno</label>
+        <div class="control has-icons-left">
+            {{ form.username }}
+            <span class="icon is-small is-left">
+              <i class="fas fa-user"></i>
+            </span>
+        </div>
+    </div>
+
+    <div class="field">
+        <label class="label" for="{{ form.password.id_for_label }}">Heslo</label>
+        <div class="control has-icons-left">
+            {{ form.password }}
+            <span class="icon is-small is-left">
+              <i class="fas fa-lock"></i>
+            </span>
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="control">
+            <button type="submit" class="button is-primary">Přihlásit se</button>
+        </div>
+    </div>
+</form>
+
     <p class="mt-3">Nemáte účet? <a href="{% url 'registrace' %}">Registrovat se</a>.</p>
 </div>
 {% endblock %}

@@ -6,6 +6,14 @@ from .models import Ingredient, Recipe, RecipeIngredient
 
 from django.forms import inlineformset_factory
 
+from django.contrib.auth.forms import AuthenticationForm
+
+class VlastniLoginForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'input'})
+
 
 class RegistraceForm(UserCreationForm):
     email = forms.EmailField(required=True, label="Email")
@@ -21,11 +29,22 @@ class RegistraceForm(UserCreationForm):
         return email
 
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs.update({'class': 'input'})
+
+
 class IngredientForm(forms.ModelForm):
     class Meta:
         model = Ingredient
         fields = ['name', 'description', 'image']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs.update({'class': 'input'})
+        self.fields['description'].widget.attrs.update({'class': 'input'})
+        self.fields['image'].widget.attrs.update({'class': 'file-input'})
 
 
 class RecipeForm(forms.ModelForm):
@@ -33,15 +52,30 @@ class RecipeForm(forms.ModelForm):
         model = Recipe
         fields = ['title', 'description', 'image']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'title' in self.fields:
+            self.fields['title'].widget.attrs.update({'class': 'input'})
+        if 'description' in self.fields:
+            self.fields['description'].widget.attrs.update({'class': 'textarea'})
+        if 'image' in self.fields:
+            self.fields['image'].widget.attrs.update({'class': 'file-input'})
+
 
 class RecipeIngredientForm(forms.ModelForm):
     class Meta:
         model = RecipeIngredient
         fields = ['ingredient', 'quantity']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'quantity' in self.fields:
+            self.fields['quantity'].widget.attrs.update({'class': 'input'})
+
+
 RecipeIngredientFormSet = inlineformset_factory(
     Recipe, RecipeIngredient,
     form=RecipeIngredientForm,
-    extra=3,  # počet prázdných řádků pro ingredience, můžeš změnit
+    extra=3,
     can_delete=False
 )
