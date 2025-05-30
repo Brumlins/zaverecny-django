@@ -4,18 +4,89 @@
 
 {% block content %}
 <div class="container mt-4">
-    <h2>Seznam ingrediencí</h2>
-    <ul>
+    <h2 class="title is-3 mb-5">Seznam ingrediencí</h2>
+
+    <form method="get" class="mb-5">
+        <div class="field has-addons">
+            <div class="control is-expanded">
+                <input class="input" type="text" name="q" placeholder="Hledat ingredienci..." value="{{ request.GET.q }}">
+            </div>
+            <div class="control">
+                <button class="button is-info" type="submit">
+                    <span class="icon"><i class="fas fa-search"></i></span>
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div class="columns is-multiline">
         {% for ingredient in ingredients %}
-            <li>
-                <a href="{% url 'ingredient_detail' ingredient.name %}">{{ ingredient.name }}</a>
-            </li>
+           <div class="column is-4">
+                <a href="{% url 'ingredient_detail' ingredient.name %}" class="card ingredient-card-link">
+                    {% if ingredient.image %}
+                      <div class="card-image" style="height: 200px; overflow: hidden;">
+                        <figure class="image is-4by3" style="height: 100%;">
+                          <img src="{{ ingredient.image.url }}" alt="{{ ingredient.name }}" style="object-fit: cover; width: 100%; height: 100%;">
+                        </figure>
+                      </div>
+                    {% endif %}
+                    <div class="card-content" style="flex: 1 1 auto;">
+                        <p class="title is-5 mb-2">
+                            {{ ingredient.name }}
+                        </p>
+                        {% if ingredient.description %}
+                        <p class="content">{{ ingredient.description|truncatewords:20 }}</p>
+                        {% endif %}
+                    </div>
+                </a>
+            </div>
+
         {% empty %}
-            <li>Žádné ingredience.</li>
+            <div class="column">
+                <div class="notification is-warning">Žádné ingredience.</div>
+            </div>
         {% endfor %}
-    </ul>
+    </div>
     {% if user.is_authenticated %}
-        <a href="{% url 'pridat_ingredienci' %}" class="btn btn-success mt-3">Přidat ingredienci</a>
+        <a href="{% url 'pridat_ingredienci' %}" class="button is-success mt-3">
+            <span class="icon"><i class="fas fa-plus"></i></span>
+            <span>Přidat ingredienci</span>
+        </a>
     {% endif %}
 </div>
+
+<style>
+/* Zajistí stejnou výšku obrázku a ořeže obrázek na poměr 4:3 */
+.card-image .image img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    min-height: 200px;
+    max-height: 200px;
+}
+.card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.card-content {
+    flex: 1 1 auto;
+}
+
+.ingredient-card-link {
+    color: inherit;
+    text-decoration: none;
+    transition: box-shadow 0.2s, transform 0.2s;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.ingredient-card-link:hover, .ingredient-card-link:focus {
+    box-shadow: 0 4px 24px rgba(50,50,93,0.11), 0 1.5px 6px rgba(0,0,0,0.08);
+    transform: translateY(-2px) scale(1.02);
+    cursor: pointer;
+    text-decoration: none;
+}
+
+</style>
 {% endblock %}

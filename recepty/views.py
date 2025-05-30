@@ -34,8 +34,11 @@ def recipe_list(request):
 
 def recipe_detail(request, pk):
     recipe = get_object_or_404(Recipe, pk=pk)
-    recipe.ingredients.all()
-    return render(request, 'recepty/recipe_detail.html', {'recipe': recipe})
+    recipe_ingredients = RecipeIngredient.objects.filter(recipe=recipe)
+    return render(request, "recepty/recipe_detail.html", {
+        "recipe": recipe,
+        "recipe_ingredients": recipe_ingredients,
+    })
 
 
 @login_required
@@ -50,8 +53,13 @@ def pridat_ingredienci(request):
     return render(request, 'ingredience/pridat_ingredienci.html', {'form': form})
 
 def ingredient_list(request):
-    ingredients = Ingredient.objects.all()
-    return render(request, 'ingredience/ingredient_list.html', {'ingredients': ingredients})
+    q = request.GET.get('q', '')
+    if q:
+        ingredients = Ingredient.objects.filter(name__icontains=q)
+    else:
+        ingredients = Ingredient.objects.all()
+    return render(request, "ingredience/ingredient_list.html", {"ingredients": ingredients})
+
 
 def ingredient_detail(request, name):
     ingredient = Ingredient.objects.get(name=name)

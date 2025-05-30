@@ -3,26 +3,38 @@
 {% block title %}{{ ingredient.name }}{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>Ingredience: {{ ingredient.name }}</h2>
-    {% if ingredient.image %}
-        <img src="{{ ingredient.image.url }}" alt="{{ ingredient.name }}" class="img-fluid mb-3" style="max-width:200px;">
-    {% endif %}
-    {% if ingredient.description %}
-        <p>{{ ingredient.description }}</p>
-    {% endif %}
+<div class="container mt-4" style="max-width: 600px;">
+    <div class="box">
+        <h2 class="title is-3 mb-4">{{ ingredient.name }}</h2>
+        {% if ingredient.image %}
+            <figure class="image is-128x128 mb-4" style="margin: 0 auto; background: transparent; display: flex; align-items: center; justify-content: center;">
+                <img src="{{ ingredient.image.url }}" alt="{{ ingredient.name }}" style="object-fit: contain; width: 100%; height: 100%;">
+            </figure>
 
-    <h4>Tato ingredience se nachází v těchto receptech:</h4>
-    <ul>
-        {% for ri in recipe_ingredients %}
-            <li>
-                <a href="{% url 'recipe_detail' ri.recipe.pk %}">{{ ri.recipe.title }}</a>
-                {% if ri.quantity %}– {{ ri.quantity }}{% endif %}
-            </li>
-        {% empty %}
-            <li>Ingredience není použita v žádném receptu.</li>
-        {% endfor %}
-    </ul>
-    <a href="{% url 'ingredient_list' %}" class="btn btn-secondary mt-3">Zpět na seznam ingrediencí</a>
+
+        {% endif %}
+
+        {% if ingredient.description %}
+            <p class="content mb-4">{{ ingredient.description }}</p>
+        {% endif %}
+
+        <h4 class="title is-5 mt-5 mb-3">Tato ingredience se nachází v těchto receptech:</h4>
+        <div class="content">
+            <ul>
+                {% for ri in recipe_ingredients %}
+                    <li>
+                        <a href="{% url 'recipe_detail' ri.recipe.pk %}" class="has-text-link">{{ ri.recipe.title }}</a>
+                        {% if ri.quantity %} – <span class="tag is-dark">{{ ri.quantity }}</span>{% endif %}
+                    </li>
+                {% empty %}
+                    <li><span class="has-text-grey">Ingredience není použita v žádném receptu.</span></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <a href="{% url 'ingredient_list' %}" class="button is-light mt-4">
+            <span class="icon"><i class="fas fa-arrow-left"></i></span>
+            <span>Zpět na seznam ingrediencí</span>
+        </a>
+    </div>
 </div>
 {% endblock %}

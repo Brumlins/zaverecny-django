@@ -3,11 +3,18 @@
 {% block content %}
 
 <!-- Úvodní stránka -->
-<div class="container mt-20">
-  <h1 class="display-4">Vítejte na stránkách Receptů!</h1>
-  <p class="lead">Najděte a sdílejte recepty s ostatními. Pro začátek si prohlédněte naše recepty nebo se podívejte na seznam členů.</p>
+<div class="container mt-6">
+  <div class="box has-text-centered">
+    <h1 class="title is-1 mb-4">Vítejte na stránkách Receptů!</h1>
+    <p class="subtitle is-4 mb-5">
+      Najděte a sdílejte recepty s ostatními. Pro začátek si prohlédněte naše recepty.
+    </p>
 
-  <a href="{% url 'recipe_list' %}" class="btn btn-secondary">Prohlédnout recepty</a>
+    <a href="{% url 'recipe_list' %}" class="button is-info is-medium">
+      <span class="icon"><i class="fas fa-utensils"></i></span>
+      <span>Prohlédnout recepty</span>
+    </a>
+  </div>
 </div>
 
 {% endblock %}

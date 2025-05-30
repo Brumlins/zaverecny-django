@@ -12,5 +12,18 @@
     {% endif %}
     <p class="mb-4">{{ recipe.description }}</p>
     <p><strong>Autor:</strong> {{ recipe.autor.username }}</p>
+
+    <h4 class="title is-5 mt-5 mb-3">Ingredience</h4>
+    <ul>
+        {% for ri in recipe_ingredients %}
+            <li>
+                <a href="{% url 'ingredient_detail' ri.ingredient.name %}" class="has-text-link">
+                    {{ ri.ingredient.name }}{% if ri.quantity %} – <span class="tag is-dark">{{ ri.quantity }}</span>{% endif %}
+                </a>
+            </li>
+        {% empty %}
+            <li><span class="has-text-grey">Žádné ingredience.</span></li>
+        {% endfor %}
+    </ul>
 </div>
 {% endblock %}

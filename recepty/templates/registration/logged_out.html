@@ -1,10 +1,12 @@
 {% extends "base.html" %}
-
-{% block title %}Odhlášení{% endblock %}
-
 {% block content %}
-<div class="container mt-4">
-    <h2>Úspěšně jste se odhlásili.</h2>
-    <a href="{% url 'index' %}" class="btn btn-primary mt-3">Zpět na úvodní stránku</a>
-</div>
+    <div class="container mt-6">
+        <div class="box has-text-centered">
+            <h2 class="title is-3 mb-4">Byl jste úspěšně odhlášen.</h2>
+            <a href="{% url 'index' %}" class="button is-primary is-medium">
+                <span class="icon"><i class="fas fa-home"></i></span>
+                <span>Zpět na úvodní stránku</span>
+            </a>
+        </div>
+    </div>
 {% endblock %}
