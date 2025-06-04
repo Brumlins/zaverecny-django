@@ -14,6 +14,7 @@ urlpatterns = [
     path('recepty/pridat/', views.pridat_recept, name='pridat_recept'),
     path('recepty/', views.recipe_list, name='recipe_list'),
     path('recepty/<int:pk>/', views.recipe_detail, name='recipe_detail'),
+    path('recepty/<int:pk>/edit/', views.recipe_edit, name='recipe_edit'),
 
     path('ingredience/pridat/', views.pridat_ingredienci, name='pridat_ingredienci'),
     path('ingredience/', views.ingredient_list, name='ingredient_list'),

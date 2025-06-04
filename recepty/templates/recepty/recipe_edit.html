@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Upravit recept: {{ recipe.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 600px;">
+    <h2 class="title is-3 mb-4">Upravit recept: {{ recipe.title }}</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        {# --- Základní pole receptu --- #}
+        {% for field in form %}
+            <div class="field">
+                <label class="label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                <div class="control">
+                    {% if field.field.widget.input_type == "file" %}
+                        <div class="file has-name is-boxed is-fullwidth">
+                            <label class="file-label">
+                                {{ field }}
+                                <span class="file-cta">
+                                    <span class="file-icon">
+                                        <i class="fas fa-upload"></i>
+                                    </span>
+                                    <span class="file-label">
+                                        Vybrat obrázek…
+                                    </span>
+                                </span>
+                                <span class="file-name" id="file-name">
+                                    {% if recipe.image %}
+                                        {{ recipe.image.name|cut:"recepty/" }}
+                                    {% else %}
+                                        Žádný soubor nevybrán
+                                    {% endif %}
+                                </span>
+                            </label>
+                        </div>
+                        {% if recipe.image %}
+                            <figure class="image is-4by3 mt-2" style="max-width: 200px;">
+                                <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}">
+                            </figure>
+                        {% endif %}
+                    {% elif field.field.widget.input_type == "textarea" %}
+                        {{ field }}
+                    {% elif field.field.widget.input_type == "select" %}
+                        <div class="select is-fullwidth">
+                            {{ field }}
+                        </div>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+                </div>
+                {% for error in field.errors %}
+                    <p class="help is-danger">{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        {# --- Ingredience --- #}
+        <h4 class="title is-5 mt-5 mb-3">Ingredience</h4>
+        {{ formset.management_form }}
+        {% for subform in formset %}
+            <div class="columns is-mobile is-vcentered mb-3">
+                <div class="column is-7">
+                    <div class="field">
+                        <label class="label" for="{{ subform.ingredient.id_for_label }}">{{ subform.ingredient.label }}</label>
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                {{ subform.ingredient }}
+                            </div>
+                        </div>
+                        {% for error in subform.ingredient.errors %}
+                            <p class="help is-danger">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="column is-4">
+                    <div class="field">
+                        <label class="label" for="{{ subform.quantity.id_for_label }}">{{ subform.quantity.label }}</label>
+                        <div class="control">
+                            {{ subform.quantity }}
+                        </div>
+                        {% for error in subform.quantity.errors %}
+                            <p class="help is-danger">{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="column is-1">
+                    {% if subform.instance.pk %}
+                        <label class="checkbox" style="margin-top: 2.5em;">
+                            {{ subform.DELETE }} <span class="has-text-danger">Smazat</span>
+                        </label>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+
+        <p class="mb-4">
+            Nevidíte svoji ingredienci?
+            <a href="{% url 'pridat_ingredienci' %}" target="_blank">Přidejte ji!</a>
+        </p>
+
+        <div class="field mt-4">
+            <div class="control">
+                <button type="submit" class="button is-primary">Uložit změny</button>
+                <a href="{% url 'recipe_detail' recipe.pk %}" class="button is-light ml-2">Zpět</a>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const fileInput = document.querySelector('.file-input');
+    const fileName = document.getElementById('file-name');
+    if (fileInput && fileName) {
+        fileInput.addEventListener('change', function () {
+            if (fileInput.files.length > 0) {
+                fileName.textContent = fileInput.files[0].name;
+            } else {
+                fileName.textContent = 'Žádný soubor nevybrán';
+            }
+        });
+    }
+});
+</script>
+
+<style>
+.file-label .file-cta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+.file-label .file-cta .file-label {
+    width: auto;
+    text-align: center;
+}
+.file-name {
+    text-align: center;
+    width: 100%;
+    display: block;
+}
+</style>
+{% endblock %}

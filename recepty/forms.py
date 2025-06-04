@@ -79,3 +79,13 @@ RecipeIngredientFormSet = inlineformset_factory(
     extra=3,
     can_delete=False
 )
+
+def __init__(self, *args, **kwargs):
+    super().__init__(*args, **kwargs)
+    for field in self.fields.values():
+        if field.widget.input_type == 'text':
+            field.widget.attrs.update({'class': 'input'})
+        elif field.widget.input_type == 'textarea':
+            field.widget.attrs.update({'class': 'textarea'})
+        elif field.widget.input_type == 'file':
+            field.widget.attrs.update({'class': 'file-input'})

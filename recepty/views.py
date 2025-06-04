@@ -1,8 +1,10 @@
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseForbidden
 from .models import Ingredient, Recipe, RecipeIngredient
-from .forms import RecipeForm, RecipeIngredientFormSet, IngredientForm, RegistraceForm
+from .forms import RecipeForm, RecipeIngredientFormSet, IngredientForm, RegistraceForm, RecipeIngredientForm
+from django.forms import inlineformset_factory
 
 
 def profile(request):
@@ -40,6 +42,35 @@ def recipe_detail(request, pk):
         "recipe_ingredients": recipe_ingredients,
     })
 
+RecipeIngredientFormSet = inlineformset_factory(
+    Recipe, RecipeIngredient,
+    form=RecipeIngredientForm,
+    extra=1,  # počet prázdných řádků navíc
+    can_delete=True
+)
+
+@login_required
+def recipe_edit(request, pk):
+    recipe = get_object_or_404(Recipe, pk=pk)
+    if recipe.autor != request.user:
+        return HttpResponseForbidden("Nemáte oprávnění upravovat tento recept.")
+
+    if request.method == "POST":
+        form = RecipeForm(request.POST, request.FILES, instance=recipe)
+        formset = RecipeIngredientFormSet(request.POST, instance=recipe)
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            formset.save()
+            return redirect('recipe_detail', pk=recipe.pk)
+    else:
+        form = RecipeForm(instance=recipe)
+        formset = RecipeIngredientFormSet(instance=recipe)
+
+    return render(request, "recepty/recipe_edit.html", {
+        "form": form,
+        "formset": formset,
+        "recipe": recipe
+    })
 
 @login_required
 def pridat_ingredienci(request):

@@ -11,12 +11,20 @@
         </figure>
     {% endif %}
     <p class="mb-4">{{ recipe.description }}</p>
+    {% if user.is_authenticated and user == recipe.autor %}
+        <a href="{% url 'recipe_edit' recipe.pk %}" class="button is-warning is-small mb-4">
+            <span class="icon"><i class="fas fa-edit"></i></span>
+            <span>Upravit recept</span>
+        </a>
+    {% endif %}
+
     <p><strong>Autor:</strong> {{ recipe.autor.username }}</p>
 
     <h4 class="title is-5 mt-5 mb-3">Ingredience</h4>
     <ul>
         {% for ri in recipe_ingredients %}
-            <li>
+           <li>
+                <input type="checkbox" class="ingredient-checkbox" data-ingredient-id="{{ ri.ingredient.pk }}">
                 <a href="{% url 'ingredient_detail' ri.ingredient.name %}" class="has-text-link">
                     {{ ri.ingredient.name }}{% if ri.quantity %} – <span class="tag is-dark">{{ ri.quantity }}</span>{% endif %}
                 </a>
@@ -26,4 +34,41 @@
         {% endfor %}
     </ul>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Unikátní klíč pro každý recept (použij jeho ID)
+    const recipeId = "{{ recipe.pk }}";
+    const storageKey = "checked_ingredients_recipe_" + recipeId;
+
+    // Načti uložené hodnoty (pole ID ingrediencí jako stringy)
+    let checked = [];
+    try {
+        checked = JSON.parse(localStorage.getItem(storageKey)) || [];
+    } catch (e) {
+        checked = [];
+    }
+
+    // Nastav checkboxy podle uložených hodnot
+    document.querySelectorAll('.ingredient-checkbox').forEach(function(checkbox) {
+        const ingredientId = checkbox.getAttribute('data-ingredient-id');
+        // Porovnání jako string!
+        if (checked.includes(ingredientId)) {
+            checkbox.checked = true;
+        }
+
+        // Při změně ulož stav
+        checkbox.addEventListener('change', function() {
+            let updated = new Set(checked);
+            if (checkbox.checked) {
+                updated.add(ingredientId);
+            } else {
+                updated.delete(ingredientId);
+            }
+            checked = Array.from(updated);
+            localStorage.setItem(storageKey, JSON.stringify(checked));
+        });
+    });
+});
+</script>
 {% endblock %}

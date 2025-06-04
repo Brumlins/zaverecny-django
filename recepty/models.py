@@ -8,6 +8,7 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
+
 class Ingredient(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
@@ -15,6 +16,7 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Recipe(models.Model):
     title = models.CharField(max_length=100)
